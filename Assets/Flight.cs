@@ -11,13 +11,24 @@ public class Flight : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public float requiredTime;
     public InputHandle handle;
     public AnimationBird anim;
+    public bool autoFlight;
+    public bool shouldLand;
+
     void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
     {
+        if (autoFlight)
+        {
+            shouldLand = true;
+            autoFlight = false;
+            return;
+        } 
+
         holdingButton = true;
     }
 
     void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
     {
+        if (autoFlight) return;
         holdingButton = false;
         handle.Fly = false;
         handle.JumpHold = false;
@@ -28,7 +39,9 @@ public class Flight : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     void Update()
     {
-        if(holdingButton)
+        if (autoFlight) return;
+
+        if (holdingButton)
         {
             if (anim.isGrounded)
             {
